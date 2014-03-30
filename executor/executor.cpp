@@ -119,6 +119,8 @@ namespace util
     void thread_pool_executor::terminate()
     {
         add([this]{ _exit_flag.store(true);});
+        for(unsigned int i=1;i<_threads.size();++i)
+            add([this] { });//pass an emtpy closure so all threads will pick a job and exit..
     }
 
     void thread_pool_executor::add(std::function<void()> closure)
@@ -147,6 +149,21 @@ namespace util
 
             closure();
         }
+    }
+            
+    inline_executor::inline_executor(){}
+    
+    inline_executor::~inline_executor(){}
+            
+    
+    void inline_executor::add(std::function<void()> closure)
+    {
+        closure();
+    }
+    
+    size_t inline_executor::num_pending_closures()
+    {
+        return 0;
     }
 
 }

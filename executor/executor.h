@@ -61,5 +61,14 @@ namespace util
             std::atomic_bool                    _exit_flag;
     };
 
+    class inline_executor : public executor
+    {
+        public:
+            inline_executor();
+            ~inline_executor();
+            
+            virtual void add(std::function<void()> closure);
+            virtual size_t num_pending_closures();
+    };
 }
 
